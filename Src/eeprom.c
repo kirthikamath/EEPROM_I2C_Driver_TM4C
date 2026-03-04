@@ -27,10 +27,10 @@ uint8_t EEPROM_WriteByte(uint16_t address, uint8_t data)
 {
     if(address>=EEPROM_SIZE_BYTES)
     {
-        return 1;//Invalid address
+        return 1;//error
     }
     eeprom_memory[address]= data;
-    return 0;
+    return 0;//success
 }
 
 /*
