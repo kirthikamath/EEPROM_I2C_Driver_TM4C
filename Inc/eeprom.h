@@ -9,6 +9,7 @@
  * Page size is used to avoid page boundary write issues
  */
 #define EEPROM_I2C_ADDRESS   0x50
+#define EEPROM_SIZE_BYTES    1024
 #define EEPROM_PAGE_SIZE     64
 
 /*
