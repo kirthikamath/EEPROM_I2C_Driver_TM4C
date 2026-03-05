@@ -25,7 +25,7 @@ void EEPROM_Init(void);
  *
  * @return status (0 = success, negative = error)
  */
-int EEPROM_WriteByte(uint16_t mem_addr, uint8_t data);
+uint8_t EEPROM_WriteByte(uint16_t mem_addr, uint8_t data);
 
 /*
  * Reads a single byte from EEPROM
@@ -35,7 +35,7 @@ int EEPROM_WriteByte(uint16_t mem_addr, uint8_t data);
  *
  * @return status (0 = success, negative = error)
  */
-int EEPROM_ReadByte(uint16_t mem_addr, uint8_t *data);
+uint8_t EEPROM_ReadByte(uint16_t mem_addr, uint8_t *data);
 
 /*
  * Writes multiple bytes to EEPROM with page-safe handling
