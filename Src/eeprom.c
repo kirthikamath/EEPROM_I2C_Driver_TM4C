@@ -48,3 +48,24 @@ uint8_t EEPROM_ReadByte(uint16_t address, uint8_t *data)
     *data = eeprom_memory[address];
     return 0;
 }
+
+uint8_t EEPROM_WritePage(uint16_t address,uint8_t *data, uint16_t length)
+{
+    uint16_t i;
+    if((address+length )> EEPROM_SIZE_BYTES)
+    {
+        return 1;
+    }
+    else if (length > EEPROM_PAGE_SIZE)
+    {
+        return 1;
+    }
+    else
+    {
+        for (i=0; i< length; i++)
+        {
+            eeprom_memory[address+i]=data[i];
+        }
+        return 0;
+    }
+}
