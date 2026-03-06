@@ -2,7 +2,7 @@
 #include "Inc/eeprom.h"
 int main()
 {
-  uint8_t write_byffer[5]={10,20,30,40,50};
+  uint8_t write_buffer[5]={10,20,30,40,50};
   uint16_t i;
   uint8_t data_read;
   EEPROM_Init();
