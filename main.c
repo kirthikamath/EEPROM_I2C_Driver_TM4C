@@ -14,7 +14,7 @@ int main()
 
   /*Test page write*/
   EEPROM_WritePage(20,write_buffer,5);
-  for(i=0;i<5;i++)
+  for(i=0;i<5;i++)//reading the data from the eeprom
     {
       EEPROM_ReadByte(20+i,&data_read);
       printf("Address %d Data %d\n",20+i,data_read);
