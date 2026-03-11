@@ -68,6 +68,6 @@ int EEPROM_WriteBuffer(uint16_t mem_addr, uint8_t *data, uint16_t length);
 /*
  * Reads multiple bytes from EEPROM
  */
-int EEPROM_ReadBuffer(uint16_t mem_addr, uint8_t *data, uint16_t length);
+uint8_t EEPROM_ReadBuffer(uint16_t mem_addr, uint8_t *data, uint16_t length);
 
 #endif /* EEPROM_H */
