@@ -69,3 +69,19 @@ uint8_t EEPROM_WritePage(uint16_t address,uint8_t *data, uint16_t length)
         return 0;
     }
 }
+
+uint8_t EEPROM_ReadBUffer(uint16_t address,uint8_t *buffer,uint16_t length)
+{
+    uint16_t i;
+    /*checj=k if read exceeds memory size*/
+    if((address+length)> EEPROM_SIZE_BYTES)
+    {
+        return 1;
+    }
+    for(i=0;i<length;i++)
+    {
+        buffer[i]= eeprom_memory[address+i];
+    }
+    return 0;
+}
+
