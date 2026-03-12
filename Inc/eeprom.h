@@ -12,6 +12,8 @@
 #define EEPROM_SIZE_BYTES    1024
 #define EEPROM_PAGE_SIZE     64
 
+#define EERPOM_OK 0
+#define EEPROM_ERROR 1
 /*
  * Initializes the I2C peripheral required for EEPROM communication
  */
