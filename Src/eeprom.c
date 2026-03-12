@@ -17,6 +17,15 @@ void EEPROM_Init(void)
         }
 }
 
+uint8_t EEPROM_Is=ValidAddress(uint16_t address)
+{
+    if(address >= EEPROM_SIZE_BYTES)
+    {
+        return EEPROM_ERROR;
+    }
+    return EEPROM_OK;
+}
+
 /*
  * EEPROM_WriteByte
  * ----------------
@@ -25,7 +34,7 @@ void EEPROM_Init(void)
  */
 uint8_t EEPROM_WriteByte(uint16_t address, uint8_t data)
 {
-    if(address>=EEPROM_SIZE_BYTES)
+    if(EEPROM_IsValidAddress(address) ==EEPROM_EEROR)
     {
         return EEPROM_ERROR;//error
     }
