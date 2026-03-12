@@ -17,7 +17,7 @@ void EEPROM_Init(void)
         }
 }
 
-uint8_t EEPROM_Is=ValidAddress(uint16_t address)
+uint8_t EEPROM_IsValidAddress(uint16_t address)
 {
     if(address >= EEPROM_SIZE_BYTES)
     {
@@ -34,7 +34,7 @@ uint8_t EEPROM_Is=ValidAddress(uint16_t address)
  */
 uint8_t EEPROM_WriteByte(uint16_t address, uint8_t data)
 {
-    if(EEPROM_IsValidAddress(address) ==EEPROM_EEROR)
+    if(EEPROM_IsValidAddress(address) == EEPROM_ERROR)
     {
         return EEPROM_ERROR;//error
     }
@@ -50,7 +50,7 @@ uint8_t EEPROM_WriteByte(uint16_t address, uint8_t data)
  */
 uint8_t EEPROM_ReadByte(uint16_t address, uint8_t *data)
 {
-    if(address>=EEPROM_SIZE_BYTES||data==0)
+    if(EEPROM_IsValidAddress(address) == EEPROM_ERROR ||data == NULL)
     {
         return EEPROM_ERROR;
     }
@@ -81,7 +81,7 @@ uint8_t EEPROM_WritePage(uint16_t address,uint8_t *data, uint16_t length)
     
 }
 
-uint8_t EEPROM_ReadBUffer(uint16_t address,uint8_t *buffer,uint16_t length)
+uint8_t EEPROM_ReadBuffer(uint16_t address,uint8_t *buffer,uint16_t length)
 {
     uint16_t i;
     /*checj=k if read exceeds memory size*/
