@@ -27,10 +27,10 @@ uint8_t EEPROM_WriteByte(uint16_t address, uint8_t data)
 {
     if(address>=EEPROM_SIZE_BYTES)
     {
-        return 1;//error
+        return EEPROM_ERROR;//error
     }
     eeprom_memory[address]= data;
-    return 0;//success
+    return EEPROM_OK;//success
 }
 
 /*
@@ -43,10 +43,10 @@ uint8_t EEPROM_ReadByte(uint16_t address, uint8_t *data)
 {
     if(address>=EEPROM_SIZE_BYTES||data==0)
     {
-        return 1;
+        return EEPROM_ERROR;
     }
     *data = eeprom_memory[address];
-    return 0;
+    return EEPROM_OK;
 }
 
 uint8_t EEPROM_WritePage(uint16_t address,uint8_t *data, uint16_t length)
@@ -54,21 +54,21 @@ uint8_t EEPROM_WritePage(uint16_t address,uint8_t *data, uint16_t length)
     uint16_t i;
     if((address+length )> EEPROM_SIZE_BYTES)//prevents writing outside memory.
     {
-        return 1;
+        return EEPROM_ERROR;
     }
     if (length > EEPROM_PAGE_SIZE)//real eeprom chips allow writing only one page at a time
     {
-        return 1;
+        return EEPROM_ERROR;
     }
     if((address/EEPROM_PAGE_SIZE)!=((address+length-1)/EEPROM_PAGE_SIZE)) //check page boundary crossing
     {
-        return 1;
+        return EEPROM_ERROR;
     }
     for (i=0; i< length; i++) //copies each byte from buffer to eeprom memory
     {
         eeprom_memory[address+i]=data[i];
     }
-    return 0;
+    return EEPROM_OK;
     
 }
 
@@ -78,12 +78,12 @@ uint8_t EEPROM_ReadBUffer(uint16_t address,uint8_t *buffer,uint16_t length)
     /*checj=k if read exceeds memory size*/
     if((address+length)> EEPROM_SIZE_BYTES)
     {
-        return 1;
+        return EEPROM_ERROR;
     }
     for(i=0;i<length;i++)
     {
         buffer[i]= eeprom_memory[address+i];
     }
-    return 0;
+    return EEPROM_OK;
 }
 
