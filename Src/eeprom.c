@@ -2,6 +2,8 @@
 #include "eeprom.h"
 /*Simulated EEPROM memory*/
 static uint8_t eeprom_memory[EEPROM_SIZE_BYTES];
+
+/*Hardware abstraction Delay*/
 static void EEPROM_HW_Write(uint16_t address,uint8_t data)
 {
     epprom_memory[address] = data;
@@ -9,6 +11,17 @@ static void EEPROM_HW_Write(uint16_t address,uint8_t data)
 static uint8_t EEPROM_HW_Read(uint16_t address)
 {
     return epprom_memory[address];
+}
+
+/* Simulate EEPROM write delay*/
+static void EEPROM_WriteDelay(void)
+{
+    /* In real hardware, the EEPROM would take ~5ms to complete the write*/
+    volatile uint32_t i;
+    for(i=0;i<50000;i++)
+    {
+        //do nothing
+    }
 }
 /*
  * EEPROM_Init
@@ -48,6 +61,7 @@ uint8_t EEPROM_WriteByte(uint16_t address, uint8_t data)
     }
     
     EEPROM_HW_Write(address,data);
+    EEPROM_WriteDelay();
     return EEPROM_OK;//success
 }
 
@@ -86,6 +100,7 @@ uint8_t EEPROM_WritePage(uint16_t address,uint8_t *data, uint16_t length)
     {
         EEPROM_HW_Write(address+i , data[i]);
     }
+    EEPROM_WriteDelay();
     return EEPROM_OK;
     
 }
