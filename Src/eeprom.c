@@ -2,6 +2,14 @@
 #include "eeprom.h"
 /*Simulated EEPROM memory*/
 static uint8_t eeprom_memory[EEPROM_SIZE_BYTES];
+static void EEPROM_HW_Write(uint16_t address,uint8_t data)
+{
+    epprom_memory[address] = data;
+}
+static uint8_t EEPROM_HW_Read(uint16_t address)
+{
+    return epprom_memory[address];
+}
 /*
  * EEPROM_Init
  * -------------
@@ -38,7 +46,8 @@ uint8_t EEPROM_WriteByte(uint16_t address, uint8_t data)
     {
         return EEPROM_ERROR;//error
     }
-    eeprom_memory[address]= data;
+    
+    EEPROM_HW_Write(address,data);
     return EEPROM_OK;//success
 }
 
@@ -54,7 +63,7 @@ uint8_t EEPROM_ReadByte(uint16_t address, uint8_t *data)
     {
         return EEPROM_ERROR;
     }
-    *data = eeprom_memory[address];
+    *data = EEPROM_HW_Read(address);
     return EEPROM_OK;
 }
 
@@ -75,7 +84,7 @@ uint8_t EEPROM_WritePage(uint16_t address,uint8_t *data, uint16_t length)
     }
     for (i=0; i< length; i++) //copies each byte from buffer to eeprom memory
     {
-        eeprom_memory[address+i]=data[i];
+        EEPROM_HW_Write(address+i , data[i]);
     }
     return EEPROM_OK;
     
@@ -91,7 +100,7 @@ uint8_t EEPROM_ReadBuffer(uint16_t address,uint8_t *buffer,uint16_t length)
     }
     for(i=0;i<length;i++)
     {
-        buffer[i]= eeprom_memory[address+i];
+        buffer[i]= EEPROM_HW_Read(address+i);
     }
     return EEPROM_OK;
 }
