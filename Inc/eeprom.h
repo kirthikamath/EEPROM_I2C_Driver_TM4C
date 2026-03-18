@@ -68,7 +68,10 @@ uint8_t EEPROM_WritePage(uint16_t address,uint8_t *data,uint16_t length);
 int EEPROM_WriteBuffer(uint16_t mem_addr, uint8_t *data, uint16_t length);
 
 /*
- * Reads multiple bytes from EEPROM
+ *EEPROM_ReadBuffer
+ * Reads multiple bytes from EEPROM starting at address into buffer.
+ *length specifies the number of bytes to read.
+ *returns EEPROM_OK on success, EEPROM_ERROR on invalid address or null pointer.
  */
 uint8_t EEPROM_ReadBuffer(uint16_t address, uint8_t *buffer, uint16_t length);
 
