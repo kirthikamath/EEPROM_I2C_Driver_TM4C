@@ -109,7 +109,7 @@ uint8_t EEPROM_ReadBuffer(uint16_t address,uint8_t *buffer,uint16_t length)
 {
     uint16_t i;
     /*checj=k if read exceeds memory size*/
-    if((address+length)> EEPROM_SIZE_BYTES)
+    if(EEPROM_IsValidAddress(address)==EEPROM_ERROR|| (address+length)> EEPROM_SIZE_BYTES)|| buffer == NULL)
     {
         return EEPROM_ERROR;
     }
