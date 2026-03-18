@@ -108,7 +108,7 @@ uint8_t EEPROM_WritePage(uint16_t address,uint8_t *data, uint16_t length)
 uint8_t EEPROM_ReadBuffer(uint16_t address,uint8_t *buffer,uint16_t length)
 {
     uint16_t i;
-    /*checj=k if read exceeds memory size*/
+    /*check if read exceeds memory size*/
     if(EEPROM_IsValidAddress(address)==EEPROM_ERROR|| (address+length)> EEPROM_SIZE_BYTES)|| buffer == NULL)
     {
         return EEPROM_ERROR;
@@ -120,3 +120,17 @@ uint8_t EEPROM_ReadBuffer(uint16_t address,uint8_t *buffer,uint16_t length)
     return EEPROM_OK;
 }
 
+uint8_t EEPROM_WriteBuffer(uint16_t address,uint8_t *buffer,uint16_t length)
+{
+    uint16_t i;
+    /*check if write exceeds memory size*/
+    if(EEPROM_IsValidAddress(address)==EEPROM_ERROR|| (address+length)> EEPROM_SIZE_BYTES)|| buffer == NULL)
+    {
+        return EEPROM_ERROR;
+    }
+    for(i=0;i<length;i++)
+    {
+        buffer[i]= EEPROM_HW_Write(address+i,buffer[i]);
+    }
+    return EEPROM_OK;
+}
