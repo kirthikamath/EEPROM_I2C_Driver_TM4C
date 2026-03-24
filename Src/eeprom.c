@@ -6,11 +6,11 @@ static uint8_t eeprom_memory[EEPROM_SIZE_BYTES];
 /*Hardware abstraction Delay*/
 static void EEPROM_HW_Write(uint16_t address,uint8_t data)
 {
-    epprom_memory[address] = data;
+    eeprom_memory[address] = data;
 }
 static uint8_t EEPROM_HW_Read(uint16_t address)
 {
-    return epprom_memory[address];
+    return eeprom_memory[address];
 }
 
 /* Simulate EEPROM write delay*/
@@ -109,7 +109,7 @@ uint8_t EEPROM_ReadBuffer(uint16_t address,uint8_t *buffer,uint16_t length)
 {
     uint16_t i;
     /*check if read exceeds memory size*/
-    if(EEPROM_IsValidAddress(address)==EEPROM_ERROR|| (address+length)> EEPROM_SIZE_BYTES)|| buffer == NULL)
+    if(EEPROM_IsValidAddress(address)==EEPROM_ERROR|| (address+length)> EEPROM_SIZE_BYTES|| buffer == NULL)
     {
         return EEPROM_ERROR;
     }
@@ -124,13 +124,14 @@ uint8_t EEPROM_WriteBuffer(uint16_t address,uint8_t *buffer,uint16_t length)
 {
     uint16_t i;
     /*check if write exceeds memory size*/
-    if(EEPROM_IsValidAddress(address)==EEPROM_ERROR|| (address+length)> EEPROM_SIZE_BYTES)|| buffer == NULL)
+    if(EEPROM_IsValidAddress(address)==EEPROM_ERROR|| (address+length)> EEPROM_SIZE_BYTES|| buffer == NULL)
     {
         return EEPROM_ERROR;
     }
     for(i=0;i<length;i++)
     {
-        buffer[i]= EEPROM_HW_Write(address+i,buffer[i]);
+      EEPROM_HW_Write(address+i,buffer[i]);
     }
+    EEPROM_WriteDelay();
     return EEPROM_OK;
 }
