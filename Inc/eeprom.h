@@ -9,10 +9,11 @@
  * Page size is used to avoid page boundary write issues
  */
 #define EEPROM_I2C_ADDRESS   0x50
-#define EEPROM_SIZE_BYTES    1024
+#define EEPROM_SIZE_BYTES    32768
 #define EEPROM_PAGE_SIZE     64
+#define EEPROM_MAX_ADDR      0x7FFF
 
-#define EERPOM_OK 0
+#define EEPROM_OK 0
 #define EEPROM_ERROR 1
 /*
  * Initializes the I2C peripheral required for EEPROM communication
@@ -35,7 +36,7 @@ uint8_t EEPROM_WriteByte(uint16_t address, uint8_t data);
  * @param mem_addr : EEPROM internal memory address
  * @param data     : Pointer to store the read byte
  *
- * @return status (0 = success, negative = error)
+ * @return status (0 = success, 1 = error)
  */
 uint8_t EEPROM_ReadByte(uint16_t address, uint8_t *data);
 
@@ -65,7 +66,7 @@ uint8_t EEPROM_WritePage(uint16_t address,uint8_t *data,uint16_t length);
 /*
  * Writes multiple bytes to EEPROM with page-safe handling
  */
-int EEPROM_WriteBuffer(uint16_t mem_addr, uint8_t *data, uint16_t length);
+/*int EEPROM_WriteBuffer(uint16_t mem_addr, uint8_t *data, uint16_t length);*/
 
 /*
  *EEPROM_ReadBuffer
@@ -82,5 +83,10 @@ uint8_t EEPROM_ReadBuffer(uint16_t address, uint8_t *buffer, uint16_t length);
 uint8_t EEPROM_WriteBuffer(uint16_t address, uint8_t *buffer, uint16_t length);
 
 uint8_t EEPROM_IsValidAddress(uint16_t address);
+
+/*Hardware abstraction layer*/
+
+uint8_t EEPROM_HW_Write(uint16_t mem_addr, uint8_t *data, uint16_t len);
+uint8_t EEPROM_HW_Read(uint16_t mem_addr, uint8_t *data, uint16_t len);
 
 #endif /* EEPROM_H */
