@@ -1,17 +1,17 @@
 /*EEPROM driver source file*/
 #include "eeprom.h"
 /*Simulated EEPROM memory*/
-static uint8_t eeprom_memory[EEPROM_SIZE_BYTES];
+//static uint8_t eeprom_memory[EEPROM_SIZE_BYTES];
 
 /*Hardware abstraction Delay*/
-static void EEPROM_HW_Write(uint16_t address,uint8_t data)
+/*static void EEPROM_HW_Write(uint16_t address,uint8_t data)
 {
     eeprom_memory[address] = data;
 }
 static uint8_t EEPROM_HW_Read(uint16_t address)
 {
     return eeprom_memory[address];
-}
+}*/
 
 /* Simulate EEPROM write delay*/
 static void EEPROM_WriteDelay(void)
@@ -23,6 +23,37 @@ static void EEPROM_WriteDelay(void)
         //do nothing
     }
 }
+
+uint8_t EEPROM_HW_Write(uint16_t mem_addr, uint8_t *data, uint16_t len)
+{
+    uint8_t addr_high =(mem_addr>>8)& 0xFF;
+    uint8_t addr_low = mem_addr & 0xFF;
+
+    // Step 1: Set slave address(Write mode)
+    I2CMasterSlaveAddrSet(I2C0-BASE,EEPROM-I2C_ADDRESS,false);
+
+    //Step 2: Send address high byte
+    I2CMasterDataPut(I2C0_BASE,addr_high);
+    I2CMasterControl(I2C_BASE, I2C_MASTER_CMD_BURST_SEND_START);
+    while(I2CMaterBusy(I2C_BASE));
+
+    //Step 3: Send address low byte
+    I2CMasterDataPut(I2C_BASE,addr_low);
+    I2CMasterControl(I2C_BASE,I2C_MASTER_CMD_BURST_SEND_CMD);
+    while(I2CMasterBusy(I2C0_BASE));
+
+    //Step 4: Send data bytes
+    for(uint16_t i=0; i<len;i++)
+    {
+        I2CMasterDataPut(I2C0_BASE,data[i]);
+        if(i==(len-1))
+            I2CMasterControl(I2C0_BASE,I2C_MASTER_CMD_BURST_SEND_FINISH);
+        else
+            I2CMasterControl(I2C0_BASE,I2C_MASTER_CMD_BURST_SEND_CONT);
+        while(I2CMasterBusy(I2C0_BASE));
+    }
+    EEPROM_WriteDelay();
+    
 /*
  * EEPROM_Init
  * -------------
@@ -32,10 +63,7 @@ static void EEPROM_WriteDelay(void)
  */
 void EEPROM_Init(void)
 {
-    for(uint16_t i=0;i<EEPROM_SIZE_BYTES;i++)
-        {
-            eeprom_memory[i]=0xFF;
-        }
+    
 }
 
 uint8_t EEPROM_IsValidAddress(uint16_t address)
