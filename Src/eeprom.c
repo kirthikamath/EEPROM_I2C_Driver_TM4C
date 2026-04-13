@@ -30,16 +30,16 @@ uint8_t EEPROM_HW_Write(uint16_t mem_addr, uint8_t *data, uint16_t len)
     uint8_t addr_low = mem_addr & 0xFF;
 
     // Step 1: Set slave address(Write mode)
-    I2CMasterSlaveAddrSet(I2C0-BASE,EEPROM-I2C_ADDRESS,false);
+    I2CMasterSlaveAddrSet(I2C0_BASE,EEPROM_I2C_ADDRESS,false);
 
     //Step 2: Send address high byte
     I2CMasterDataPut(I2C0_BASE,addr_high);
-    I2CMasterControl(I2C_BASE, I2C_MASTER_CMD_BURST_SEND_START);
-    while(I2CMaterBusy(I2C_BASE));
+    I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_SEND_START);
+    while(I2CMasterBusy(I2C0_BASE));
 
     //Step 3: Send address low byte
-    I2CMasterDataPut(I2C_BASE,addr_low);
-    I2CMasterControl(I2C_BASE,I2C_MASTER_CMD_BURST_SEND_CMD);
+    I2CMasterDataPut(I2C0_BASE,addr_low);
+    I2CMasterControl(I2C0_BASE,I2C_MASTER_CMD_BURST_SEND_CONT);
     while(I2CMasterBusy(I2C0_BASE));
 
     //Step 4: Send data bytes
@@ -53,6 +53,45 @@ uint8_t EEPROM_HW_Write(uint16_t mem_addr, uint8_t *data, uint16_t len)
         while(I2CMasterBusy(I2C0_BASE));
     }
     EEPROM_WriteDelay();
+
+uint8_t EEPROM_HW_Read(uint16_t mem_addr, uint8_t *data, uint16_t len)
+{
+    uint8_t addr_high =(mem_addr>>8)& 0xFF;
+    uint8_t addr_low = mem_addr & 0xFF;
+
+    // Step 1: Set slave address(Write mode to send memory address)
+    I2CMasterSlaveAddrSet(I2C0_BASE,EEPROM_I2C_ADDRESS,false);
+
+    // Send address high byte
+    I2CMasterDataPut(I2C0_BASE,addr_high);
+    I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_SEND_START);
+    while(I2CMasterBusy(I2C0_BASE));
+
+    //Send address low byte
+    I2CMasterDataPut(I2C0_BASE,addr_low);
+    I2CMasterControl(I2C0_BASE,I2C_MASTER_CMD_BURST_SEND_FINISH);
+    while(I2CMasterBusy(I2C0_BASE));
+
+    //Step 2: Switcg to READ mode
+    I2CMasterSlaveAddrSet(I2C0_BASE,EEPROM_I2C_ADDRESS,true);
+
+    
+    for(uint16_t i=0; i<len;i++)
+    {
+        if(i==0 && len==1)
+            I2CMasterControl(I2C0_BASE,I2C_MASTER_CMD_SINGLE_RECEIVE);
+        else if(i==0))
+            I2CMasterControl(I2C0_BASE,I2C_MASTER_CMD_BURST_RECEIVE_START);
+        else if (i==(len-1))
+            I2CMasterControl(I2C0_BASE,I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
+        else
+            I2CMasterControl(I2C0_BASE,I2C_MASTER_CMD_BURST_RECEIVE_CONT);
+        
+        while(I2CMasterBusy(I2C0_BASE));
+
+        data[i]=I2CMasterDataGet(I2C0_BASE);
+    }
+    return EEPROM_OK;
     
 /*
  * EEPROM_Init
@@ -88,7 +127,7 @@ uint8_t EEPROM_WriteByte(uint16_t address, uint8_t data)
         return EEPROM_ERROR;//error
     }
     
-    EEPROM_HW_Write(address,data);
+    EEPROM_HW_Write(address,&data,1);
     EEPROM_WriteDelay();
     return EEPROM_OK;//success
 }
